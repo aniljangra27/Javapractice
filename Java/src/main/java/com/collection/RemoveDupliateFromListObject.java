@@ -23,11 +23,19 @@ public class RemoveDupliateFromListObject {
                 .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingInt(Employee::getId))),
                         ArrayList::new));
 
-        final ArrayList<Employee> collectByName = employeeList.stream()
+        System.out.println(collectById +"\n --------------");
+
+        List<Employee> employeeListByName = new ArrayList<>();
+        employeeListByName.add(new Employee(1, "anil"));
+        employeeListByName.add(new Employee(2, "sunil"));
+        employeeListByName.add(new Employee(3, "anil"));
+
+
+        final ArrayList<Employee> collectByName = employeeListByName.stream()
                 .collect(Collectors.collectingAndThen(toCollection(() -> new TreeSet<>(comparing(Employee::getName))),
                         ArrayList::new));
 
-        System.out.println(collectById);
+
 // -- by name
         System.out.println(collectByName);
     }
