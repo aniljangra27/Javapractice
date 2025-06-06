@@ -22,6 +22,8 @@ public class UserEntity {
     private String userName;
     @NonNull
     private String password;
+
+    private List<String> roles = new ArrayList<>(); // e.g., "ROLE_USER", "ROLE_ADMIN"
     @DBRef
     private List<ArticleEntry> articles = new ArrayList<>();
 }

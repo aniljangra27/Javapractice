@@ -3,7 +3,9 @@ package com.spring345.springbootapplication.controller;
 import com.spring345.springbootapplication.Entity.UserEntity;
 import com.spring345.springbootapplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +24,30 @@ public class UserController {
         userService.saveUserEntry(userEntity);
     }
 
+//    @PostMapping("/add/new")
+//    public void addNewUserWithencyptPwd(@RequestBody UserEntity userEntity) {
+//        userService.saveNewsUser(userEntity);
+//    }
+
     //add logic for PUT and DELETE
-    @PutMapping("/put/{userName}")
-    public ResponseEntity<String> updateUser(@RequestBody UserEntity userEntity, @PathVariable String userName) {
-        return userService.findByUsername(userEntity, userName);
+//    @PutMapping("/put/{userName}")
+//    public ResponseEntity<String> updateUser(@RequestBody UserEntity userEntity, @PathVariable String userName) {
+//        return userService.findByUsername(userEntity, userName);
+//    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody UserEntity userEntity) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity userInDb = userService.findByUserNameOnly(userName);
+        if (userName == null || userName.isEmpty() || userInDb.getUserName().isEmpty()) {
+            return ResponseEntity.badRequest().body("User not authenticated");
+        }
+        userInDb.setUserName(userEntity.getUserName());
+        userInDb.setPassword(userEntity.getPassword());
+        userService.saveNewsUser(userInDb);
+        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable String id) {
         userService.deleteUserById(id);
